@@ -41,17 +41,48 @@ var UserTest = function () {
 }
 
 var allTweets = function(){
-	return Tweet.all().then(function(tweet){
+	return Tweet.all({include: [User]}).then(function(tweet){
 		return tweet
 	})
 }
 
+var allTweetsFromUser = function(name){
+  return Tweet.all({include: [{
+    model : User,
+    where : {name: {$like: name}}
+  }]}).then(function(tweet){
+    return tweet
+  })
+}
+
+var addTweet = function(name, text){
+  //find user ID
+  return User.findOne({where:{name: {$like:name}}}) // WORKING
+  .then(function(userRow){
+    return userRow.id;
+    // return Tweet.create({userId: userRow.id, tweet: text})
+  })
+  .then(function(data){
+    console.log(data+" should be a string"); //Returning User ID 4 for nimit
+    return Tweet.create({UserId: Number(data), tweet: text})
+  })
+
+    console.log("user: " +name + " @id: " + userId)
+  //add Tweet
+  // return Tweet.create({userId: userId, tweet: text}) //Working
+}
+
+// query Tweets that return tweets from a user
+
+// query that writes a new tweet
 
 
 module.exports = {
     User: User,
     Tweet: Tweet,
     AllTweets: allTweets,
+    AllTweetsFromUser : allTweetsFromUser,
+    AddTweet: addTweet
 };
 
 

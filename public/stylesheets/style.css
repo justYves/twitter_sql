@@ -58,6 +58,11 @@ code {
   font-weight: bold;
 }
 
+img#default {
+  width: 4em;
+  align: left;
+  margin: 0 0 2em 0;
+}
 /*
 -------------------------------------------
 */

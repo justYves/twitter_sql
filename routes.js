@@ -4,38 +4,40 @@ module.exports = router
 var models = require('./models')
 var fs = require('fs')
 
+//Main Page
 router.get('/', function(req, res, next) {
-  // res.json(tweetBank.list())
-  // res.render('index', {
-  //   //tweets: tweetBank.list()
-  //   users: models.User
-  // })
 	models.AllTweets().then(function(data){
 		res.render('index', {
-			tweets: data
+			tweets: data, showForm: true
 		})
 	})
 })
 
+
+//Adding Tweets 
 router.post('/', function(req, res, next) {
-  tweetBank.add(req.body.name, req.body.tweet)
-  res.status(201).end()
+  var name = req.body.name;
+  var tweetText = req.body.text;
+  //addTwee(name,tweet_content)
+  
+  models.AddTweet(name,tweetText).then(function(data){
+    res.redirect('/users/'+name);
+  })
+
 })
 
+
+//User Page showing all tweets from user
 router.get('/users/:user', function(req, res, next) {
-  var tweets = tweetBank.find({ name: req.params.user })
-  res.render('index', { tweets: tweets })
-
+  var name = req.params.user;
+  models.AllTweetsFromUser(name).then(function(data){
+    res.render('index', {
+      tweets: data, showForm: true
+    })
+  })
 })
 
-// example without static file server
-// router.get('/style.css', function(req, res) {
-//   fs.readFile('./public/style.css', function(err, contentBuffer) {
-//     var css = contentBuffer.toString()
-//     res.header('Content-Type', 'text/css')
-//     res.send(css)
-//   })
-// })
+
 
 
 
