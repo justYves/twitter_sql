@@ -3,19 +3,19 @@ var Sequelize = require('sequelize');
 // create an instance of a database connection
 // which abstractly represents our app's mysql database
 var twitterjsDB = new Sequelize('twitterjs', 'root', null, {
-    dialect: "mysql",
-    port:    3306,
+  dialect: "mysql",
+  port:    3306,
 });
 
 // open the connection to our database
 twitterjsDB
-  .authenticate()
-  .catch(function(err) {
-    console.log('Unable to connect to the database:', err);
-  })
-  .then(function() {
-    console.log('Connection has been established successfully.');
-  });
+.authenticate()
+.catch(function(err) {
+  console.log('Unable to connect to the database:', err);
+})
+.then(function() {
+  console.log('Connection has been established successfully.');
+});
 
 // set up tables
 var Tweet = require('./tweet')(twitterjsDB);
@@ -33,12 +33,6 @@ Tweet.belongsTo(User);
 // 	})
 // }
 
-//var UserTest = require('../models').User;
-var UserTest = function () {
-	return User.findById(4).then(function(user) {
-        return JSON.stringify(user);
-	});
-}
 
 var allTweets = function(){
 	return Tweet.all({include: [User]}).then(function(tweet){
@@ -57,32 +51,29 @@ var allTweetsFromUser = function(name){
 
 var addTweet = function(name, text){
   //find user ID
-  return User.findOne({where:{name: {$like:name}}}) // WORKING
+  return User.findOne({where:{name: {$like:name}}}) // query Tweets that return tweets from a user
   .then(function(userRow){
     return userRow.id;
-    // return Tweet.create({userId: userRow.id, tweet: text})
   })
   .then(function(data){
-    console.log(data+" should be a string"); //Returning User ID 4 for nimit
-    return Tweet.create({UserId: Number(data), tweet: text})
+    return Tweet.create({UserId: Number(data), tweet: text}) //writes a new tweet
   })
-
-    console.log("user: " +name + " @id: " + userId)
-  //add Tweet
-  // return Tweet.create({userId: userId, tweet: text}) //Working
+  .catch(function(err){
+    User.create({name: name}).then(function(name){
+      User.findOne({where:{name: {$like:name}}}).then(function(data){
+        return Tweet.create({UserId: Number(data), tweet: text});
+      });
+    })
+  })
 }
-
-// query Tweets that return tweets from a user
-
-// query that writes a new tweet
 
 
 module.exports = {
-    User: User,
-    Tweet: Tweet,
-    AllTweets: allTweets,
-    AllTweetsFromUser : allTweetsFromUser,
-    AddTweet: addTweet
+  User: User,
+  Tweet: Tweet,
+  AllTweets: allTweets,
+  AllTweetsFromUser : allTweetsFromUser,
+  AddTweet: addTweet
 };
 
 
