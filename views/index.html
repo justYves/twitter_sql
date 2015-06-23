@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+ 
+{% block content %}
+  
+  <div class="page-header">
+    <h1>Welcome to Twitter.js, Nimit!</h1>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <img src="https://pbs.twimg.com/profile_images/2450268678/olxp11gnt09no2y2wpsh_normal.jpeg"><br>
+      <b>Your Name</b><br>
+      100 followers <br><br>
+      {% if showForm %}
+	  <form action="/submit" method="POST">
+	    <label for="name_field">Name:</label>
+	    <input name="name" type="text" id="name_field" style="width: 190px" 
+	    value="{{name}}"
+	    />
+
+	    <br>
+
+	    <label for="text_field">Text:</label>
+	    <input name="text" type="text" id="text_field" style="width: 200px" />
+
+	    <input type="submit" value="Submit" />
+	  </form>
+	{% endif %}
+    </div>
+    <div class="col-md-9">
+    	<h2> All Tweets
+
+    	 </h2>
+      <!-- display tweets here -->
+      		<h3> {{title}} </h3>
+    {% for tweet in tweets %}
+  <li><a href="/users/{{tweet.name}}">{{tweet.UserId}}</a> - {{ tweet.tweet }}
+  </li>
+	{% endfor %}
+	{% for listitem in list %}
+      		 <li> {{listitem.text}} </li>
+    {% endfor %}
+      
+    </div>
+  </div>  
+{% endblock %}
+
+<!-- <h1>{{ title }}</h1>
+<p>This is a bare-bones template.</p>
+<ul>
+{% for person in people %}
+  <li>{{ person.name }}</li>
+{% endfor %}
+</ul> -->
+<!--{% for tweet in tweets %}
+        <li class="username"> {{tweet.name}} </li>
+         <li> {{tweet.text}}</li>
+      {% endfor %}-->
+<!--{% for listitem in list %}
+      		 <li> {{listitem.text}} </li>
+      	{% endfor %}-->
